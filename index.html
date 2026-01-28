@@ -1,56 +1,7 @@
-qr-troll-web/
- ├── index.html
- └── troll.jpg
 <!doctype html>
-<html lang="vi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QR App</title>
-
-<style>
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  font-family: system-ui, sans-serif;
-}
-
-#overlay{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-
-#overlay img{
-  max-width:80%;
-  max-height:60%;
-  border-radius:12px;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-}
-
-#overlay p{
-  color:white;
-  margin-top:20px;
-  font-size:22px;
-  text-align:center;
-}
-</style>
-</head>
-
-<body>
-
-<div id="overlay">
-  <img src="troll.jpg" alt="troll">
-  <p>😈 Lừa đấy haha!</p>
-</div>
-
+<html>
+<body style="margin:0; background:black; display:flex; justify-content:center; align-items:center; height:100vh;">
+  <img src="troll.jpg" style="max-width:90%; max-height:90%;">
 </body>
 </html>
-
 
