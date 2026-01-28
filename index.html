@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ứng dụng QR — Troll Notification</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#111827;
+      --accent:#f97316;
+      --muted:#9ca3af;
+    }
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, Roboto, "Segoe UI", Arial;}
+    body{background:linear-gradient(180deg,#071029 0%, #0b1220 100%); color:#e6eef8; display:flex; align-items:center; justify-content:center; padding:24px;}
+    .app {
+      width:100%;
+      max-width:920px;
+      background:rgba(255,255,255,0.02);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.8);
+      overflow:hidden;
+    }
+    header{padding:20px;border-bottom:1px solid rgba(255,255,255,0.03);}
+    header h1{margin:0;font-size:18px;letter-spacing:0.2px}
+    main{padding:28px;}
+    .content {font-size:15px; color:var(--muted); line-height:1.5;}
+
+    /* Troll full-screen modal */
+    .troll-modal{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.95));
+      z-index:9999;
+      padding:22px;
+      backdrop-filter: blur(6px);
+      animation:fadeIn .25s ease-out both;
+    }
+    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+    .troll-card{
+      width:100%;
+      max-width:760px;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      padding:26px;
+      box-shadow:0 20px 50px rgba(2,6,23,0.7);
+      text-align:left;
+      position:relative;
+      color:#fff;
+    }
+    .troll-title{font-size:22px; margin:0 0 8px 0; color:var(--accent);}
+    .troll-body{font-size:16px; color:#e6eef8; margin-bottom:18px}
+    .troll-options{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{
+      background:transparent;
+      color:inherit;
+      border:1px solid rgba(255,255,255,0.08);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      transition: all .14s ease;
+      backdrop-filter: blur(2px);
+    }
+    .btn:hover{transform:translateY(-3px)}
+    .btn.primary{
+      background:linear-gradient(90deg,var(--accent), #fbbf24);
+      color:#071026;
+      border:0;
+      box-shadow: 0 8px 22px rgba(249,115,22,0.18);
+    }
+    .mini{
+      font-size:13px;color:var(--muted);
+      margin-top:12px;
+    }
+
+    /* optional fake "system" bar at top of card */
+    .sysbar{position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(90deg,#f97316,#f59e0b); border-top-left-radius:12px;border-top-right-radius:12px}
+    @media (max-width:560px){
+      .troll-card{padding:18px}
+      .troll-title{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="main">
+    <header><h1>Ứng dụng demo — QR Troll</h1></header>
+    <main>
+      <div class="content">
+        Đây là trang demo. Khi người dùng quét QR và vào trang này, một màn hình thông báo "troll" (giả lập thông báo bất ngờ) sẽ xuất hiện.
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal hiển thị khi đến từ QR (mặc định hiển thị luôn) -->
+  <div id="trollModal" class="troll-modal" aria-hidden="false" role="dialog" aria-label="Thông báo">
+    <div class="troll-card" role="document">
+      <div class="sysbar" aria-hidden="true"></div>
+      <h2 class="troll-title">⚠️ Thông báo quan trọng</h2>
+      <p class="troll-body" id="trollText">
+        Xin chúc mừng — bạn vừa bị troll! 😄<br>
+        Đây chỉ là một trò đùa vui. Muốn tiếp tục dùng app thì bấm "OK" nhé.
+      </p>
+
+      <div class="troll-options">
+        <button id="btnOk" class="btn primary">OK, tiếp tục</button>
+        <button id="btnShare" class="btn">Chia sẻ (chỉ để trêu)</button>
+        <button id="btnClose" class="btn">Thoát</button>
+      </div>
+      <p class="mini">Bạn có thể ẩn thông báo này bằng cách chọn "OK" — hoặc nếu muốn, thay nội dung bằng lời nhắn khác.</p>
+    </div>
+  </div>
+
+  <script>
+    // Cấu hình: nếu bạn muốn chỉ hiện màn troll khi có param ?troll=1, bật điều kiện dưới
+    const requireParam = false; // đổi thành true nếu chỉ hiện khi có ?troll=1
+    const modal = document.getElementById('trollModal');
+    const btnOk = document.getElementById('btnOk');
+    const btnClose = document.getElementById('btnClose');
+    const btnShare = document.getElementById('btnShare');
+
+    function urlHasParam(name) {
+      return new URLSearchParams(window.location.search).has(name);
+    }
+
+    function showModal(){
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      // optional: trap focus for accessibility (simple)
+      btnOk.focus();
+    }
+    function hideModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    // Tùy chọn: nếu requireParam = true thì chỉ show khi ?troll=1
+    if (!requireParam || urlHasParam('troll')) {
+      // show after tiny delay so page layout settles
+      setTimeout(showModal, 200);
+    } else {
+      hideModal();
+    }
+
+    // Buttons
+    btnOk.addEventListener('click', () => {
+      // mark in localStorage để lần sau không hiện nữa (tuỳ chọn)
+      try { localStorage.setItem('seenTroll', '1'); } catch(e){}
+      hideModal();
+    });
+
+    btnClose.addEventListener('click', () => {
+      // redirect ra nơi khác, hoặc đóng tab (không thể đóng tab bằng JS thường)
+      window.location.href = 'about:blank';
+    });
+
+    btnShare.addEventListener('click', () => {
+      const shareUrl = window.location.href;
+      if (navigator.share) {
+        navigator.share({title:'Đã bị troll 😂', text:'Mình vừa bị troll thử nè!', url: shareUrl});
+      } else {
+        // fallback: copy link
+        navigator.clipboard?.writeText(shareUrl).then(() => {
+          alert('Link đã được copy — gửi cho ai bạn muốn trêu!');
+        }).catch(()=> alert('Không copy được. Link: ' + shareUrl));
+      }
+    });
+
+    // Optionally: if user already saw it and you want to skip on subsequent loads:
+    try {
+      if (localStorage.getItem('seenTroll') === '1') {
+        hideModal();
+      }
+    } catch(e){}
+  </script>
+</body>
+</html>
