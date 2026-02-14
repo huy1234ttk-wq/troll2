@@ -77,7 +77,23 @@
       margin-top:12px;
     }
 
-  
+    /* optional fake "system" bar at top of card */
+    .sysbar{position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(90deg,#f97316,#f59e0b); border-top-left-radius:12px;border-top-right-radius:12px}
+    @media (max-width:560px){
+      .troll-card{padding:18px}
+      .troll-title{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="main">
+    <header><h1>Ứng dụng demo — QR Troll</h1></header>
+    <main>
+      <div class="content">
+        Đây là trang demo. Khi người dùng quét QR và vào trang này, một màn hình thông báo "troll" (giả lập thông báo bất ngờ) sẽ xuất hiện.
+      </div>
+    </main>
+  </div>
 
   <!-- Modal hiển thị khi đến từ QR (mặc định hiển thị luôn) -->
   <div id="trollModal" class="troll-modal" aria-hidden="false" role="dialog" aria-label="Thông báo">
@@ -85,7 +101,7 @@
       <div class="sysbar" aria-hidden="true"></div>
       <h2 class="troll-title">⚠️ Thông báo quan trọng</h2>
       <p class="troll-body" id="trollText">
-        Xin chúc mừng — bạn vừa bị lừa sang cam! 😄<br>
+        Xin chúc mừng — bạn vừa bị troll! 😄<br>
         Đây chỉ là một trò đùa vui. Muốn tiếp tục dùng app thì bấm "OK" nhé.
       </p>
 
@@ -97,26 +113,6 @@
       <p class="mini">Bạn có thể ẩn thông báo này bằng cách chọn "OK" — hoặc nếu muốn, thay nội dung bằng lời nhắn khác.</p>
     </div>
   </div>
-  <div id="trollModal2" class="troll-modal" style="display:none;">
-  <div class="troll-card">
-    <div class="sysbar"></div>
-    <h2 class="troll-title">😈 Chưa xong đâu</h2>
-
-    <!-- Ảnh troll -->
-    <img src="troll.jpg" alt="troll"
-         style="width:100%; max-height:300px; object-fit:contain; border-radius:12px; margin-bottom:16px;">
-
-    <p class="troll-body">
-      Bạn tưởng thế là hết à? 😏<br>
-      Lại bị lừa nữa rồi!
-    </p>
-
-    <div class="troll-options">
-      <button id="btnFinal" class="btn primary">OK, tôi chịu 😭</button>
-    </div>
-  </div>
-</div>
-
 
   <script>
     // Cấu hình: nếu bạn muốn chỉ hiện màn troll khi có param ?troll=1, bật điều kiện dưới
@@ -181,5 +177,4 @@
     } catch(e){}
   </script>
 </body>
-</html>. Nếu tôi muốn khi ấn vào ok sẽ hiện lên một màn hình troll khác nữa thì phải sửa làm sao 
-
+</html>
