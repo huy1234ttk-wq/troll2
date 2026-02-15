@@ -70,4 +70,38 @@ img{
 <div id="modal1" class="modal">
   <div class="card">
     <h2>🎁 QUÀ TẾT BẤT NGỜ</h2>
-    <p>Quà Tết năm mới cho bạn nè!<br>Bấm OK để nhận quà 😏
+    <p>Quà Tết năm mới cho bạn nè!<br>Bấm OK để nhận quà 😏</p>
+    <button id="btnNext">OK, tiếp tục</button>
+  </div>
+</div>
+
+<!-- MODAL 2 -->
+<div id="modal2" class="modal hidden">
+  <div class="card">
+    <h2>😈 Chúc mừng!</h2>
+    <p>Bạn đã bị troll 🤣</p>
+    <img src="troll.jpg" alt="troll">
+    <button id="btnFinal">OK tôi chịu</button>
+  </div>
+</div>
+
+<script>
+const modal1 = document.getElementById("modal1");
+const modal2 = document.getElementById("modal2");
+const btnNext = document.getElementById("btnNext");
+const btnFinal = document.getElementById("btnFinal");
+
+// Chuyển từ modal 1 sang modal 2
+btnNext.onclick = function(){
+  modal1.classList.add("hidden");
+  modal2.classList.remove("hidden");
+};
+
+// Thoát
+btnFinal.onclick = function(){
+  window.location.href = "about:blank";
+};
+</script>
+
+</body>
+</html>
