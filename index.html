@@ -1,197 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ứng dụng QR — Troll Notification</title>
-  <style>
-    :root{
-      --bg:#0f1724;
-      --card:#111827;
-      --accent:#f97316;
-      --muted:#9ca3af;
-    }
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, Roboto, "Segoe UI", Arial;}
-    body{background:linear-gradient(180deg,#071029 0%, #0b1220 100%); color:#e6eef8; display:flex; align-items:center; justify-content:center; padding:24px;}
-    .app {
-      width:100%;
-      max-width:920px;
-      background:rgba(255,255,255,0.02);
-      border-radius:14px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.8);
-      overflow:hidden;
-    }
-    header{padding:20px;border-bottom:1px solid rgba(255,255,255,0.03);}
-    header h1{margin:0;font-size:18px;letter-spacing:0.2px}
-    main{padding:28px;}
-    .content {font-size:15px; color:var(--muted); line-height:1.5;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Troll App</title>
 
-    /* Troll full-screen modal */
-    .troll-modal{
-      position:fixed;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.95));
-      z-index:9999;
-      padding:22px;
-      backdrop-filter: blur(6px);
-      animation:fadeIn .25s ease-out both;
-    }
-    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
-    .troll-card{
-      width:100%;
-      max-width:760px;
-      border-radius:12px;
-      background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      padding:26px;
-      box-shadow:0 20px 50px rgba(2,6,23,0.7);
-      text-align:left;
-      position:relative;
-      color:#fff;
-    }
-    .troll-title{font-size:22px; margin:0 0 8px 0; color:var(--accent);}
-    .troll-body{font-size:16px; color:#e6eef8; margin-bottom:18px}
-    .troll-options{display:flex; gap:12px; flex-wrap:wrap}
-    .btn{
-      background:transparent;
-      color:inherit;
-      border:1px solid rgba(255,255,255,0.08);
-      padding:10px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:600;
-      transition: all .14s ease;
-      backdrop-filter: blur(2px);
-    }
-    .btn:hover{transform:translateY(-3px)}
-    .btn.primary{
-      background:linear-gradient(90deg,var(--accent), #fbbf24);
-      color:#071026;
-      border:0;
-      box-shadow: 0 8px 22px rgba(249,115,22,0.18);
-    }
-    .mini{
-      font-size:13px;color:var(--muted);
-      margin-top:12px;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#0b1220;
+  color:white;
+}
 
+/* Modal chung */
+.modal{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.85);
+  z-index:9999;
+}
 
-    }
-  </style>
+/* Ẩn mặc định */
+.hidden{
+  display:none;
+}
+
+.card{
+  background:#111827;
+  padding:30px;
+  border-radius:14px;
+  width:90%;
+  max-width:500px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
+}
+
+h2{
+  margin-top:0;
+  color:#f97316;
+}
+
+button{
+  margin-top:15px;
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(90deg,#f97316,#fbbf24);
+}
+
+img{
+  width:100%;
+  max-height:300px;
+  object-fit:contain;
+  border-radius:12px;
+  margin-top:15px;
+}
+</style>
 </head>
+
 <body>
-  <div class="app" role="main">
-    <header><h1>Ứng dụng demo — QR Troll</h1></header>
-    <main>
-     
-    </main>
-  </div>
 
-  <!-- Modal hiển thị khi đến từ QR (mặc định hiển thị luôn) -->
-  <div id="trollModal" class="troll-modal" aria-hidden="false" role="dialog" aria-label="Thông báo">
-    <div class="troll-card" role="document">
-      <div class="sysbar" aria-hidden="true"></div>
-      <h2 class="troll-title">QUÀ TẾT BẤT NGỜ</h2>
-      <p class="troll-body" id="trollText">
-        QUÀ TẾT NĂM MỚI CHO MỌI NGƯỜI NÈ :><br>
-         bấm "OK" để nhận quà nhé.
-      </p>
-<div id="trollModal2" class="troll-modal" style="display:none;">
-  <div class="troll-card">
-    <div class="sysbar"></div>
-    <h2 class="troll-title">😈 Chưa xong đâu</h2>
-
-    <!-- Ảnh troll -->
-    <img src="troll.jpg" alt="troll"
-         style="width:100%; max-height:300px; object-fit:contain; border-radius:12px; margin-bottom:16px;">
-
-    <p class="troll-body">
-      Chúc mừng 😏<br>
-      Bạn đã bị bán sang cam pu chia!
-    </p>
-
-    <div class="troll-options">
-      <button id="btnFinal" class="btn primary">OK, tôi chịu 😭</button>
-    </div>
-  </div>
-</div>
-
-      <div class="troll-options">
-        <button id="btnOk" class="btn primary">OK, tiếp tục</button>
-        <button id="btnShare" class="btn">Chia sẻ</button>
-        <button id="btnClose" class="btn">Thoát</button>
-      </div>
-      <p class="mini">Bạn có thể ẩn thông báo này bằng cách chọn "OK" — hoặc nếu muốn, thay nội dung bằng lời nhắn khác.</p>
-    </div>
-  </div>
-
-  <script>
-    // Cấu hình: nếu bạn muốn chỉ hiện màn troll khi có param ?troll=1, bật điều kiện dưới
-    const requireParam = false; // đổi thành true nếu chỉ hiện khi có ?troll=1
-    const modal = document.getElementById('trollModal');
-    const btnOk = document.getElementById('btnOk');
-    const btnClose = document.getElementById('btnClose');
-    const btnShare = document.getElementById('btnShare');
-    const modal2 = document.getElementById('trollModal2');
-const btnFinal = document.getElementById('btnFinal');
-
-
-    function urlHasParam(name) {
-      return new URLSearchParams(window.location.search).has(name);
-    }
-
-    function showModal(){
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden','false');
-      // optional: trap focus for accessibility (simple)
-      btnOk.focus();
-    }
-    function hideModal(){
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-    }
-
-    // Tùy chọn: nếu requireParam = true thì chỉ show khi ?troll=1
-    if (!requireParam || urlHasParam('troll')) {
-      // show after tiny delay so page layout settles
-      setTimeout(showModal, 200);
-    } else {
-      hideModal();
-    }
-
-    // Buttons
-  btnOk.addEventListener('click', () => {
-  modal.style.display = 'none';   // ẩn troll 1
-  modal2.style.display = 'flex'; // hiện troll 2
-});
-
-    btnClose.addEventListener('click', () => {
-      // redirect ra nơi khác, hoặc đóng tab (không thể đóng tab bằng JS thường)
-      window.location.href = 'about:blank';
-    });
-
-    btnShare.addEventListener('click', () => {
-      const shareUrl = window.location.href;
-      if (navigator.share) {
-        navigator.share({title:'Đã bị troll 😂', text:'Mình vừa bị troll thử nè!', url: shareUrl});
-      } else {
-        // fallback: copy link
-        navigator.clipboard?.writeText(shareUrl).then(() => {
-          alert('Link đã được copy — gửi cho ai bạn muốn trêu!');
-        }).catch(()=> alert('Không copy được. Link: ' + shareUrl));
-      }
-    });
-
-    // Optionally: if user already saw it and you want to skip on subsequent loads:
-    try {
-      if (localStorage.getItem('seenTroll') === '1') {
-        hideModal();
-      }
-    } catch(e){}
-  </script>
-</body>
-</html>
-
-
+<!-- MODAL 1 -->
+<div id="modal1" class="modal">
+  <div class="card">
+    <h2>🎁 QUÀ TẾT BẤT NGỜ</h2>
+    <p>Quà Tết năm mới cho bạn nè!<br>Bấm OK để nhận quà 😏
