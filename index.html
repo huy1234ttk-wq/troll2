@@ -93,15 +93,34 @@
   <div id="trollModal" class="troll-modal" aria-hidden="false" role="dialog" aria-label="Thông báo">
     <div class="troll-card" role="document">
       <div class="sysbar" aria-hidden="true"></div>
-      <h2 class="troll-title">⚠️ Thông báo quan trọng</h2>
+      <h2 class="troll-title">QUÀ TẾT BẤT NGỜ</h2>
       <p class="troll-body" id="trollText">
-        Xin chúc mừng — bạn vừa bị troll! 😄<br>
-        Đây chỉ là một trò đùa vui. Muốn tiếp tục dùng app thì bấm "OK" nhé.
+        QUÀ TẾT NĂM MỚI CHO MỌI NGƯỜI NÈ :><br>
+         bấm "OK" để nhận quà nhé.
       </p>
+<div id="trollModal2" class="troll-modal" style="display:none;">
+  <div class="troll-card">
+    <div class="sysbar"></div>
+    <h2 class="troll-title">😈 Chưa xong đâu</h2>
+
+    <!-- Ảnh troll -->
+    <img src="troll.jpg" alt="troll"
+         style="width:100%; max-height:300px; object-fit:contain; border-radius:12px; margin-bottom:16px;">
+
+    <p class="troll-body">
+      Chúc mừng 😏<br>
+      Bạn đã bị bán sang cam pu chia!
+    </p>
+
+    <div class="troll-options">
+      <button id="btnFinal" class="btn primary">OK, tôi chịu 😭</button>
+    </div>
+  </div>
+</div>
 
       <div class="troll-options">
         <button id="btnOk" class="btn primary">OK, tiếp tục</button>
-        <button id="btnShare" class="btn">Chia sẻ (chỉ để trêu)</button>
+        <button id="btnShare" class="btn">Chia sẻ</button>
         <button id="btnClose" class="btn">Thoát</button>
       </div>
       <p class="mini">Bạn có thể ẩn thông báo này bằng cách chọn "OK" — hoặc nếu muốn, thay nội dung bằng lời nhắn khác.</p>
@@ -115,6 +134,9 @@
     const btnOk = document.getElementById('btnOk');
     const btnClose = document.getElementById('btnClose');
     const btnShare = document.getElementById('btnShare');
+    const modal2 = document.getElementById('trollModal2');
+const btnFinal = document.getElementById('btnFinal');
+
 
     function urlHasParam(name) {
       return new URLSearchParams(window.location.search).has(name);
@@ -140,11 +162,10 @@
     }
 
     // Buttons
-    btnOk.addEventListener('click', () => {
-      // mark in localStorage để lần sau không hiện nữa (tuỳ chọn)
-      try { localStorage.setItem('seenTroll', '1'); } catch(e){}
-      hideModal();
-    });
+  btnOk.addEventListener('click', () => {
+  modal.style.display = 'none';   // ẩn troll 1
+  modal2.style.display = 'flex'; // hiện troll 2
+});
 
     btnClose.addEventListener('click', () => {
       // redirect ra nơi khác, hoặc đóng tab (không thể đóng tab bằng JS thường)
@@ -172,4 +193,5 @@
   </script>
 </body>
 </html>
+
 
